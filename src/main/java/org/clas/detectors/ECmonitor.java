@@ -188,20 +188,7 @@ public class ECmonitor  extends DetectorMonitor {
     @Override
     public void processEvent(DataEvent event) {
         
-        int triggerPhase=0;
-        if(event.hasBank("RUN::config")) {
-            DataBank bank = event.getBank("RUN::config");
-            int runNumber  = bank.getInt("run", 0);
-            long timestamp = bank.getLong("timestamp",0);    
-            IndexedTable jitter = this.getCcdb().getConstants(runNumber, "/calibration/ec/time_jitter");
-            this.period  = jitter.getDoubleValue("period",0,0,0);
-            this.phase   = jitter.getIntValue("phase",0,0,0);
-            this.ncycles = jitter.getIntValue("cycles",0,0,0);           
-//            System.out.println(period + phase + ncycles + " " + timestamp + " " + triggerPhase0);
-            if(ncycles>0){
-                triggerPhase  = (int) ((timestamp+phase)%ncycles); // TI derived phase correction due to TDC and FADC clock differences
-            }
-        }
+        int triggerPhase= this.getJitter("/calibration/ec/time_jitter");
 
         double[] pcsum = new double[6];
         double[] ecsum = new double[6];

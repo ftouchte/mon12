@@ -25,6 +25,7 @@ import org.jlab.io.base.DataEvent;
 import org.jlab.io.base.DataEventType;
 import org.jlab.io.task.IDataEventListener;
 import org.jlab.utils.groups.IndexedList;
+import org.jlab.utils.groups.IndexedTable;
 
 /**
  *
@@ -56,13 +57,17 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
     public IndexedList<List<Integer>> ftpmt = new IndexedList<>(3);
 
     public int bitsec = 0;
-    public long trigger = 0;
     public double max_occ = 10.0;
     public int trigFD = 0;
     public int trigCD = 0;
 
     private boolean testTrigger = true;
     private int UITriggerMask = 0;     // trigger mask from UI
+
+    public int    runNumber = 0;
+    public int    eventNumber = 0;
+    public long   trigger = 0;
+    public long   timeStamp = 0;
 
     public double tdcconv = 0.023456;
     public double period = 4;
@@ -132,8 +137,48 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
 
     }
 
+    public int getJitter(String table) {
+        int triggerPhase=0;
+        IndexedTable jitter = this.getCcdb().getConstants(runNumber, table);
+        this.period  = jitter.getDoubleValue("period",0,0,0);
+        this.phase   = jitter.getIntValue("phase",0,0,0);
+        this.ncycles = jitter.getIntValue("cycles",0,0,0);           
+//            System.out.println(period + phase + ncycles + " " + timestamp + " " + triggerPhase0);
+        if(ncycles>0){
+            triggerPhase  = (int) ((this.timeStamp+phase)%ncycles); // TI derived phase correction due to TDC and FADC clock differences
+        }
+        return triggerPhase;
+    }
+    
+    public boolean setRF() {
+        IndexedTable rfConfig = this.getCcdb().getConstants(this.runNumber, "/calibration/eb/rf/config");
+        double run_tdc2Time = rfConfig.getDoubleValue("tdc2time", 1, 1, 1);
+        double run_rfbucket = rfConfig.getDoubleValue("clock", 1, 1, 1);
+        int run_ncycles = rfConfig.getIntValue("cycles", 1, 1, 1);
+        if (run_tdc2Time != this.tdcconv || run_rfbucket != this.rfbucket || run_ncycles != this.ncycles) {
+            this.tdcconv = run_tdc2Time;
+            this.rfbucket = run_rfbucket;
+            this.ncycles = run_ncycles;
+            System.out.println("RF config parameter changed to: \n\t tdc2time = " + this.tdcconv + "\n\t rf bucket = " + this.rfbucket + "\n\t n. of cycles = " + this.ncycles);
+            return true;
+        }            
+        return false;
+    }
+    
+    public void setRunNumber(int run) {
+        this.runNumber = run;
+    }
+
+    public void setEventNumber(int ev) {
+        this.eventNumber = ev;
+    }
+
     public void setTriggerWord(long trig) {
         this.trigger = trig;
+    }
+
+    public void setTimeStamp(long ts) {
+        this.timeStamp = ts;
     }
 
     public void setTestTrigger(boolean test) {
@@ -319,7 +364,7 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
         plotHistos();
     }
 
-    public void processEvent(DataEvent event) {
+   public void processEvent(DataEvent event) {
         // process event
     }
 
