@@ -30,7 +30,7 @@ public class HTCCmonitor  extends DetectorMonitor {
     @Override
     public void createHistos() {
         // initialize canvas and create histograms
-        this.setJitter("calibration/eb/rf/jitter");
+        this.setJitter("/calibration/eb/rf/jitter");
         this.setRF();
         this.setNumberOfEvents(0);
         this.getDetectorCanvas().getCanvas("occupancy").divide(1, 2);
