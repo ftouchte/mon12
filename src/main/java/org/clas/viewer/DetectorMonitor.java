@@ -149,12 +149,12 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
 //            System.out.println(period + phase + ncycles + " " + timestamp + " " + triggerPhase0);
     }
     
-    public int getJitter() {
-        int triggerPhase=0;
+    public double getJitter() {
+        double jitter=0;
         if(njitter>0){
-            triggerPhase  = (int) ((this.timeStamp+phase)%njitter); // TI derived phase correction due to TDC and FADC clock differences
+            jitter  = ((int) ((this.timeStamp+phase)%njitter))*this.period; // TI derived phase correction due to TDC and FADC clock differences
         }
-        return triggerPhase;
+        return jitter;
     }
     
     public boolean setRF() {

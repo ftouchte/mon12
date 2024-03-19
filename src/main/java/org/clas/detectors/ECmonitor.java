@@ -189,7 +189,7 @@ public class ECmonitor  extends DetectorMonitor {
     @Override
     public void processEvent(DataEvent event) {
         
-        int triggerPhase= this.getJitter();
+        double tJitter= this.getJitter();
 
         double[] pcsum = new double[6];
         double[] ecsum = new double[6];
@@ -234,7 +234,7 @@ public class ECmonitor  extends DetectorMonitor {
                 int     order = bank.getByte("order",i); 
                 if(TDC>0) {
                     this.getDataGroup().getItem(0,layer,0).getH2F("occTDC"+layer).fill(sector*1.0, comp*1.0);
-                    this.getDataGroup().getItem(sector,layer,0).getH2F("datTDC"+layer+sector).fill(TDC*this.tdcconv-triggerPhase*this.period,comp*1.0);
+                    this.getDataGroup().getItem(sector,layer,0).getH2F("datTDC"+layer+sector).fill(TDC*this.tdcconv-tJitter,comp*1.0);
                 }
 //                if(layer==1)      this.getDetectorSummary().getH1F("sumPCAL").fill(sector*1.0);
 //                else if (layer==2)this.getDetectorSummary().getH1F("sumECin").fill(sector*1.0);

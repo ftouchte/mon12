@@ -217,7 +217,7 @@ public class FTOFmonitor  extends DetectorMonitor {
 	    clear(0); clear(1); clear(2); ttdcs.clear(); fadcs.clear(); ftdcs.clear(); ftpmt.clear() ; fapmt.clear();    	
 
 	            
-        int triggerPhase=this.getJitter();
+        double tJitter=this.getJitter();
         
         if(event.hasBank("FTOF::tdc")==true){
             DataBank  bank = event.getBank("FTOF::tdc");
@@ -227,7 +227,7 @@ public class FTOFmonitor  extends DetectorMonitor {
                 int  lr = bank.getByte("order",i);                       
                 int  ip = bank.getShort("component",i);
                 
-                float    tdcd = (float) (bank.getInt("TDC",i)*this.tdcconv-triggerPhase*this.period);
+                float    tdcd = (float) (bank.getInt("TDC",i)*this.tdcconv-tJitter);
                 
                 int lay=il-1; int ord=lr-2;
                 if(tdcd>0) {               	
