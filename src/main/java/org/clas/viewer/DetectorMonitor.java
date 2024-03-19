@@ -64,7 +64,7 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
     private boolean testTrigger = true;
     private int UITriggerMask = 0;     // trigger mask from UI
 
-    public int    runNumber = 0;
+    public int    runNumber = 1;
     public int    eventNumber = 0;
     public long   trigger = 0;
     public long   timeStamp = 0;
