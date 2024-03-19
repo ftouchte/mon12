@@ -27,12 +27,12 @@ public class FTOFmonitor  extends DetectorMonitor {
         
         this.setDetectorTabNames("adcOccupancy", "tdcOccupancy","adcEnergy_s", "adcTime_s", "tdc_s");
         this.useSectorButtons(true);
-        this.init(false);   // set to true for picture on left side
         ftofHits[0] = new FTOFHits("PANEL1A");
         ftofHits[1] = new FTOFHits("PANEL1B");
         ftofHits[2] = new FTOFHits("PANEL2");
         this.getCcdb().setVariation("default");
         this.getCcdb().init(Arrays.asList(new String[]{"/calibration/ftof/time_jitter"}));
+        this.init(false);   // set to true for picture on left side
     }
 
     @Override
