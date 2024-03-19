@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.jlab.utils.groups.IndexedList.IndexGenerator;
 import java.util.Map;
-import org.jlab.utils.groups.IndexedTable;
 
 public class FTOFmonitor  extends DetectorMonitor {
 
@@ -40,6 +39,7 @@ public class FTOFmonitor  extends DetectorMonitor {
     public void createHistos() {
         // initialize canvas and create histograms
         this.setNumberOfEvents(0);
+        this.setJitter("/calibration/ftof/time_jitter");
         this.getDetectorCanvas().getCanvas("adcOccupancy").divide(2, 3);
         this.getDetectorCanvas().getCanvas("adcOccupancy").setGridX(false);
         this.getDetectorCanvas().getCanvas("adcOccupancy").setGridY(false);
@@ -217,7 +217,7 @@ public class FTOFmonitor  extends DetectorMonitor {
 	    clear(0); clear(1); clear(2); ttdcs.clear(); fadcs.clear(); ftdcs.clear(); ftpmt.clear() ; fapmt.clear();    	
 
 	            
-        int triggerPhase=this.getJitter("/calibration/ftof/time_jitter");
+        int triggerPhase=this.getJitter();
         
         if(event.hasBank("FTOF::tdc")==true){
             DataBank  bank = event.getBank("FTOF::tdc");

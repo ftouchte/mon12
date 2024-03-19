@@ -10,7 +10,6 @@ import org.jlab.groot.group.DataGroup;
 import org.jlab.groot.math.F1D;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
-import org.jlab.utils.groups.IndexedTable;
 
 
 public class ECmonitor  extends DetectorMonitor {
@@ -33,6 +32,7 @@ public class ECmonitor  extends DetectorMonitor {
     @Override
     public void createHistos() {
         // initialize canvas and create histograms
+        this.setJitter("/calibration/ec/time_jitter");
         this.setNumberOfEvents(0);
         this.getDetectorCanvas().getCanvas("adcOccupancy").divide(3, 3);
         this.getDetectorCanvas().getCanvas("adcOccupancy").setGridX(false);
@@ -188,7 +188,7 @@ public class ECmonitor  extends DetectorMonitor {
     @Override
     public void processEvent(DataEvent event) {
         
-        int triggerPhase= this.getJitter("/calibration/ec/time_jitter");
+        int triggerPhase= this.getJitter();
 
         double[] pcsum = new double[6];
         double[] ecsum = new double[6];

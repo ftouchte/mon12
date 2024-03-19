@@ -30,6 +30,7 @@ public class HTCCmonitor  extends DetectorMonitor {
     @Override
     public void createHistos() {
         // initialize canvas and create histograms
+        this.setJitter("calibration/eb/rf/jitter");
         this.setRF();
         this.setNumberOfEvents(0);
         this.getDetectorCanvas().getCanvas("occupancy").divide(1, 2);
@@ -227,7 +228,7 @@ public class HTCCmonitor  extends DetectorMonitor {
     public void processEvent(DataEvent event) {
 
         // get rf period
-        double tjitter = this.getJitter("/calibration/eb/rf/jitter");
+        double tjitter = this.getJitter();
  
 
         // process event info and save into data group

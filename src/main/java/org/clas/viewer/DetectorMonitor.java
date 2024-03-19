@@ -69,12 +69,16 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
     public long   trigger = 0;
     public long   timeStamp = 0;
 
+    // rf
     public double tdcconv = 0.023456;
+    public double rfbucket = 4.008;
+    public int    ncycles = 32;
+    
+    // jitter
     public double period = 4;
     public double phase = 1;
-    public int ncycles = 6;
-    public double rfbucket = 4.008;
-
+    public int njitter = 6;
+    
     private static PrintStream outStream = null;
     private static PrintStream errStream = null;
 
@@ -137,15 +141,18 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
 
     }
 
-    public int getJitter(String table) {
-        int triggerPhase=0;
+    public void setJitter(String table) {
         IndexedTable jitter = this.getCcdb().getConstants(runNumber, table);
         this.period  = jitter.getDoubleValue("period",0,0,0);
         this.phase   = jitter.getIntValue("phase",0,0,0);
-        this.ncycles = jitter.getIntValue("cycles",0,0,0);           
+        this.njitter = jitter.getIntValue("cycles",0,0,0);           
 //            System.out.println(period + phase + ncycles + " " + timestamp + " " + triggerPhase0);
-        if(ncycles>0){
-            triggerPhase  = (int) ((this.timeStamp+phase)%ncycles); // TI derived phase correction due to TDC and FADC clock differences
+    }
+    
+    public int getJitter() {
+        int triggerPhase=0;
+        if(njitter>0){
+            triggerPhase  = (int) ((this.timeStamp+phase)%njitter); // TI derived phase correction due to TDC and FADC clock differences
         }
         return triggerPhase;
     }
