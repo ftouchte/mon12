@@ -24,8 +24,6 @@ public class ECmonitor  extends DetectorMonitor {
 //        this.setDetectorTabNames("adcOccupancy","tdcOccupancy", "adcSum", "adcEnergy_s", "adcTime_s", "tdc_s");
         this.setDetectorTabNames("adcOccupancy","tdcOccupancy", "adcEnergy_s", "adcTime_s", "tdc_s");
         this.useSectorButtons(true);
-
-        this.getCcdb().setVariation("default");
         this.getCcdb().init(Arrays.asList(new String[]{"/calibration/ec/time_jitter"}));
         this.init(false);
     }

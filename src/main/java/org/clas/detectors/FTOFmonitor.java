@@ -30,7 +30,6 @@ public class FTOFmonitor  extends DetectorMonitor {
         ftofHits[0] = new FTOFHits("PANEL1A");
         ftofHits[1] = new FTOFHits("PANEL1B");
         ftofHits[2] = new FTOFHits("PANEL2");
-        this.getCcdb().setVariation("default");
         this.getCcdb().init(Arrays.asList(new String[]{"/calibration/ftof/time_jitter"}));
         this.init(false);   // set to true for picture on left side
     }

@@ -20,9 +20,8 @@ public class FCUPmonitor extends DetectorMonitor {
     public FCUPmonitor(String name) {
         super(name);
         this.setDetectorTabNames("Faraday Cup");
-        this.init(false);
-        this.getCcdb().setVariation("default");
         this.getCcdb().init(Arrays.asList(new String[]{"/runcontrol/fcup"})); 
+        this.init(false);
     }
 
     

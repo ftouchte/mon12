@@ -96,7 +96,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
     public LinkedHashMap<String, DetectorMonitor> monitors = new LinkedHashMap<>();
     
     public BeamMonitor beamMonitor = null;
-    
+
     public final void initMonitors() {
         this.monitors.put("BAND",        new BANDmonitor("BAND"));
         this.monitors.put("BMT",         new BMTmonitor("BMT"));
@@ -862,6 +862,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         parser.addOption("-batch",    "0",              "Connect and run automatically");
         parser.addOption("-outDir",   null,             "Path for output PNG/HIPO files");
         parser.addOption("-current",  "-1",             "Minimum beam current");
+        parser.addOption("-variation", "default",       "CCDB variation");
         parser.parse(args);
 
         EventViewer viewer = new EventViewer(parser.getOption("-ethost").stringValue(),
@@ -890,14 +891,23 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         String tabs = parser.getOption("-tabs").stringValue();
         if(!tabs.equals("All")) {           
             if(tabs.split(":").length>0) {
-                for(String tab : viewer.monitors.keySet()) viewer.monitors.get(tab).setActive(false);
+                for(String tab : viewer.monitors.keySet()) {
+                    viewer.monitors.get(tab).setActive(false);
+                }
                 for(String tab: tabs.split(":")) {
-                    if(viewer.monitors.containsKey(tab.trim())) viewer.monitors.get(tab.trim()).setActive(true);
-                    System.out.println(tab + " monitor set to active");
+                    if(viewer.monitors.containsKey(tab.trim())) {
+                        viewer.monitors.get(tab.trim()).setActive(true);
+                    }
                 }
             }
         }
-        else System.out.println("All monitors set to active");   
+        else System.out.println("All monitors set to active");
+
+        // Set CCDB variation for all registered monitors:
+        for (DetectorMonitor x : viewer.monitors.values()) {
+            x.setVariation(parser.getOption("-variation").stringValue());
+        }
+        viewer.clasDecoder.setVariation(parser.getOption("-variation").stringValue());
 
         // Deal with -trigger option:
         String trigger = parser.getOption("-trigger").stringValue();
@@ -933,7 +943,10 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         frame.setSize(xSize, ySize);
         frame.setVisible(true);
         
-        if (parser.getOption("-batch").intValue() != 0) {
+        if (!parser.getInputList().isEmpty()) {
+            viewer.processorPane.openAndRun(parser.getInputList().get(0));
+        }
+        else if (parser.getOption("-batch").intValue() != 0) {
             String h = parser.getOption("-ethost").stringValue();
             String i = parser.getOption("-etip").stringValue();
             viewer.processorPane.connectAndRun(i,"11111","/et/clasprod");
