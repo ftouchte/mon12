@@ -25,7 +25,7 @@ public class ATOFmonitor extends DetectorMonitor {
   public ATOFmonitor(String name) {
     super(name);
     // Add new tabs: "WedgeTDC", "BarTDC", "BarSumDiff"
-    this.setDetectorTabNames("module","globalwedge", "occupancy", "tdc", "WedgeScalers", "BarScalers", "WedgeTDC", "BarTDC", "BarSumDiff");
+    this.setDetectorTabNames("module","globalwedge", "occupancy", "WedgeScalers", "BarScalers", "WedgeTDC", "BarTDC", "BarSumDiff");
     this.init(false);
 
     // Initialize temporary storage maps
@@ -53,10 +53,10 @@ public class ATOFmonitor extends DetectorMonitor {
     this.getDetectorCanvas().getCanvas("occupancy").setGridX(false);
     this.getDetectorCanvas().getCanvas("occupancy").setGridY(false);
 
-    // TDC Canvas
-    this.getDetectorCanvas().getCanvas("tdc").divide(2, 1);
-    this.getDetectorCanvas().getCanvas("tdc").setGridX(false);
-    this.getDetectorCanvas().getCanvas("tdc").setGridY(false);
+    //// TDC Canvas
+    //this.getDetectorCanvas().getCanvas("tdc").divide(2, 1);
+    //this.getDetectorCanvas().getCanvas("tdc").setGridX(false);
+    //this.getDetectorCanvas().getCanvas("tdc").setGridY(false);
 
     // WedgeScalers Canvas
     this.getDetectorCanvas().getCanvas("WedgeScalers").divide(1, 1);
@@ -288,11 +288,11 @@ public class ATOFmonitor extends DetectorMonitor {
     //this.getDetectorCanvas().getCanvas("occupancy").draw(this.getDataGroup().getItem(1, 0, 0).getH1F("occTDC1D"));
     //this.getDetectorCanvas().getCanvas("occupancy").update();
 
-    this.getDetectorCanvas().getCanvas("tdc").cd(0);
-    // Optionally, set the palette if supported
-    this.getDetectorCanvas().getCanvas("tdc").getPad(0).setPalette("kCool");
-    this.getDetectorCanvas().getCanvas("tdc").getPad(0).getAxisZ().setLog(getLogZ());
-    this.getDetectorCanvas().getCanvas("tdc").draw(this.getDataGroup().getItem(1, 0, 0).getH2F("tdc"));
+    //this.getDetectorCanvas().getCanvas("tdc").cd(0);
+    //// Optionally, set the palette if supported
+    //this.getDetectorCanvas().getCanvas("tdc").getPad(0).setPalette("kCool");
+    //this.getDetectorCanvas().getCanvas("tdc").getPad(0).getAxisZ().setLog(getLogZ());
+    //this.getDetectorCanvas().getCanvas("tdc").draw(this.getDataGroup().getItem(1, 0, 0).getH2F("tdc"));
 
     // Plot WedgeScalers
     this.getDetectorCanvas().getCanvas("WedgeScalers").cd(0);
