@@ -459,7 +459,7 @@ public class ATOFmonitor extends DetectorMonitor {
           barDiff.fill(diff * 1.0);
           barSumTime.fill(sum * tdc_bin_time);
           barDiffTime.fill(diff * tdc_bin_time);
-          System.out.println("sum = " + sum + ", diff = " +  diff);
+          //System.out.println("sum = " + sum + ", diff = " +  diff);
         }
       }
     }
