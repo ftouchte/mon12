@@ -55,7 +55,7 @@ import org.jlab.io.task.IDataEventListener;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.utils.system.ClasUtilsFile;
-import org.jlab.elog.LogEntry; 
+import org.jlab.jlog.LogEntry; 
 import org.jlab.utils.benchmark.BenchmarkTimer;
 import org.jlab.utils.options.OptionParser;
 
