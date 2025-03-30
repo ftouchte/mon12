@@ -55,7 +55,7 @@ import org.jlab.io.task.IDataEventListener;
 import org.jlab.jnp.hipo4.data.Event;
 import org.jlab.jnp.hipo4.data.SchemaFactory;
 import org.jlab.utils.system.ClasUtilsFile;
-import org.jlab.elog.LogEntry; 
+import org.jlab.jlog.LogEntry; 
 import org.jlab.utils.benchmark.BenchmarkTimer;
 import org.jlab.utils.options.OptionParser;
 
@@ -305,7 +305,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         splitPanel.setLeftComponent(CLAS12View);
         splitPanel.setRightComponent(this.CLAS12Canvas);
         JTextPane clas12Text   = new JTextPane();
-        clas12Text.setText("CLAS12\n monitoring plots\n V7.10\n");
+        clas12Text.setText("CLAS12\n monitoring plots\n V7.11\n");
         clas12Text.setEditable(false);       
         this.clas12Textinfo.setEditable(false);
         this.clas12Textinfo.setFont(new Font("Avenir",Font.PLAIN,16));
@@ -619,7 +619,8 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         }
 
         // only count events if the trigger mask is satisfied:
-        if ((tg & this.triggerMask) != 0L) this.eventCounter++;
+        if (this.triggerMask==0L || 
+           (tg & this.triggerMask) != 0L) this.eventCounter++;
 
         // periodically, automatically reset histograms and save images:
         if (this.histoResetEvents > 0 && this.eventCounter > this.histoResetEvents) {
@@ -885,9 +886,9 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         parser.addOption("-geometry", "1600x1000",      "Select window size, e.g. 1600x1200");
         parser.addOption("-tabs",     "All",            "Select active tabs, e.g. BST:FTOF");
         parser.addOption("-logbook",  "HBLOG",          "Select electronic logbook");
-        parser.addOption("-trigger",  "0xFFFFFFFF",     "Select trigger bits");
+        parser.addOption("-trigger",  "0x0",            "Select trigger bits (0x0 = all)");
         parser.addOption("-ethost",   "clondaq6",       "Select ET host name");
-        parser.addOption("-etip",     "129.57.167.60",  "Select ET host name");
+        parser.addOption("-etip",     "129.57.167.60",  "Select ET host IP address");
         parser.addOption("-etsession","/et/clasprod",  "DAQ session, usually clasprod or clastest7");
         parser.addOption("-autosave", "-1",             "Autosave every N events (e.g. for Hydra)");
         parser.addOption("-batch",    "0",              "Connect and run automatically");
