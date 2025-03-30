@@ -17,7 +17,7 @@ public class DCmonitor extends DetectorMonitor {
     
     public DCmonitor(String name) {
         super(name);
-        this.setDetectorTabNames("occupancy", "Occupancy with ToT Cut", "occupancyNorm", "occupancyPercent", "multiplicity", "width", "tdc2d", "tdc1d_s");
+        this.setDetectorTabNames("occupancy", "occupancyNorm", "occupancyToT", "occupancyPercent", "multiplicity", "tot", "tdc2d", "tdc1d_s");
         this.useSectorButtons(true);
         this.init(false);
     }
@@ -50,12 +50,12 @@ public class DCmonitor extends DetectorMonitor {
             occ.setTitleY("layer");
             occ.setTitle("sector "+sector);
 
-            H2F raw_with_ToT_cut = new H2F("raw_with_ToT_cut_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
+            H2F raw_with_ToT_cut = new H2F("raw_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
             raw.setTitleX("wire");
             raw.setTitleY("layer");
             raw.setTitle("sector "+sector);
             
-            H2F occ_with_ToT_cut = new H2F("occ_with_ToT_cut_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
+            H2F occ_with_ToT_cut = new H2F("occ_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
             occ.setTitleX("wire");
             occ.setTitleY("layer");
             occ.setTitle("sector "+sector);
@@ -92,11 +92,11 @@ public class DCmonitor extends DetectorMonitor {
             mult.setTitle("multiplicity sector " + sector);
             mult.setFillColor(3);
             
-            H1F width = new H1F("width"+ sector, "Width sector "+ sector, 200, 0., 1000);
-            width.setTitleX("hit width");
-            width.setTitleY("counts");
-            width.setTitle("widthiplicity sector " + sector);
-            width.setFillColor(3);
+            H1F tot = new H1F("tot"+ sector, "ToT sector "+ sector, 200, 0., 1000);
+            tot.setTitleX("hit tot");
+            tot.setTitleY("counts");
+            tot.setTitle("tot sector " + sector);
+            tot.setFillColor(3);
             
             DataGroup dg = new DataGroup(8,1);
             dg.addDataSet(raw, 0);
@@ -105,7 +105,7 @@ public class DCmonitor extends DetectorMonitor {
             dg.addDataSet(raw_reg_occ, 3);
             dg.addDataSet(tdc_raw, 4);
             dg.addDataSet(mult, 5);
-            dg.addDataSet(width, 6);
+            dg.addDataSet(tot, 6);
             dg.addDataSet(raw_summary, 7);
             dg.addDataSet(raw_with_ToT_cut, 8);
             dg.addDataSet(occ_with_ToT_cut, 9);
@@ -123,9 +123,9 @@ public class DCmonitor extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("occupancy").divide(2, 3);
         this.getDetectorCanvas().getCanvas("occupancy").setGridX(false);
         this.getDetectorCanvas().getCanvas("occupancy").setGridY(false);
-        this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").divide(2, 3);
-        this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").setGridX(false);
-        this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").setGridY(false);
+        this.getDetectorCanvas().getCanvas("occupancyToT").divide(2, 3);
+        this.getDetectorCanvas().getCanvas("occupancyToT").setGridX(false);
+        this.getDetectorCanvas().getCanvas("occupancyToT").setGridY(false);
         this.getDetectorCanvas().getCanvas("occupancyNorm").divide(2, 3);
         this.getDetectorCanvas().getCanvas("occupancyNorm").setGridX(false);
         this.getDetectorCanvas().getCanvas("occupancyNorm").setGridY(false);
@@ -144,19 +144,19 @@ public class DCmonitor extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("multiplicity").divide(2, 3);
         this.getDetectorCanvas().getCanvas("multiplicity").setGridX(false);
         this.getDetectorCanvas().getCanvas("multiplicity").setGridY(false);
-        this.getDetectorCanvas().getCanvas("width").divide(2, 3);
-        this.getDetectorCanvas().getCanvas("width").setGridX(false);
-        this.getDetectorCanvas().getCanvas("width").setGridY(false);
+        this.getDetectorCanvas().getCanvas("tot").divide(2, 3);
+        this.getDetectorCanvas().getCanvas("tot").setGridX(false);
+        this.getDetectorCanvas().getCanvas("tot").setGridY(false);
         
         for(int sector=1; sector <=6; sector++) {
             this.getDetectorCanvas().getCanvas("occupancy").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
             this.getDetectorCanvas().getCanvas("occupancy").getPad(sector-1).getAxisZ().setLog(getLogZ());
             this.getDetectorCanvas().getCanvas("occupancy").cd(sector-1);
             this.getDetectorCanvas().getCanvas("occupancy").draw(this.getDataGroup().getItem(sector,0,0).getH2F("occ_sec"+sector));
-            this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
-            this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").getPad(sector-1).getAxisZ().setLog(getLogZ());
-            this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").cd(sector-1);
-            this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").draw(this.getDataGroup().getItem(sector,0,0).getH2F("occ_with_ToT_cut_sec"+sector));
+            this.getDetectorCanvas().getCanvas("occupancyToT").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
+            this.getDetectorCanvas().getCanvas("occupancyToT").getPad(sector-1).getAxisZ().setLog(!getLogZ());
+            this.getDetectorCanvas().getCanvas("occupancyToT").cd(sector-1);
+            this.getDetectorCanvas().getCanvas("occupancyToT").draw(this.getDataGroup().getItem(sector,0,0).getH2F("occ_tot_sec"+sector));
             this.getDetectorCanvas().getCanvas("occupancyNorm").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
             this.getDetectorCanvas().getCanvas("occupancyNorm").getPad(sector-1).getAxisZ().setLog(!getLogZ());
             this.getDetectorCanvas().getCanvas("occupancyNorm").cd(sector-1);
@@ -171,8 +171,8 @@ public class DCmonitor extends DetectorMonitor {
             this.getDetectorCanvas().getCanvas("tdc2d").draw(this.getDataGroup().getItem(sector,0,0).getH2F("tdc_raw" + sector));
             this.getDetectorCanvas().getCanvas("multiplicity").cd(sector-1);
             this.getDetectorCanvas().getCanvas("multiplicity").draw(this.getDataGroup().getItem(sector,0,0).getH1F("multiplicity_sec"+ sector));
-            this.getDetectorCanvas().getCanvas("width").cd(sector-1);
-            this.getDetectorCanvas().getCanvas("width").draw(this.getDataGroup().getItem(sector,0,0).getH1F("width"+ sector));
+            this.getDetectorCanvas().getCanvas("tot").cd(sector-1);
+            this.getDetectorCanvas().getCanvas("tot").draw(this.getDataGroup().getItem(sector,0,0).getH1F("tot"+ sector));
             if(getActiveSector()==sector) {
                for(int sl=1; sl <=6; sl++) {
                    this.getDetectorCanvas().getCanvas("tdc1d").cd(sl-1);
@@ -182,20 +182,19 @@ public class DCmonitor extends DetectorMonitor {
         }
 
         this.getDetectorCanvas().getCanvas("occupancy").update();
-        this.getDetectorCanvas().getCanvas("Occupancy with ToT Cut").update();
+        this.getDetectorCanvas().getCanvas("occupancyToT").update();
         this.getDetectorCanvas().getCanvas("occupancyNorm").update();
 //        this.getDetectorCanvas().getCanvas("Raw Occupancies").update();
         this.getDetectorCanvas().getCanvas("occupancyPercent").update();
         this.getDetectorCanvas().getCanvas("tdc2d").update();
         this.getDetectorCanvas().getCanvas("multiplicity").update();
-        this.getDetectorCanvas().getCanvas("width").update();
+        this.getDetectorCanvas().getCanvas("tot").update();
         
     }
 
     @Override
     public void processEvent(DataEvent event) {
                 
-        int ToT_cut = 20;
         // process event info and save into data group
         if(event.hasBank("DC::tdc")==true){
             DataBank  bank = event.getBank("DC::tdc");
@@ -209,13 +208,13 @@ public class DCmonitor extends DetectorMonitor {
                 int     layer = bank.getByte("layer",i);
                 int      wire = bank.getShort("component",i);
                 int       TDC = bank.getInt("TDC",i);
-                int     width = bank.getInt("width",i);
+                int       ToT = bank.getInt("ToT",i);
                 int    region = (int) (layer-1)/12+1;
                 int        sl = (int) (layer-1)/6+1;
                 
                 this.getDataGroup().getItem(sector,0,0).getH2F("raw_sec"+sector).fill(wire*1.0,layer*1.0);                
-                if( width > ToT_cut) {
-                    this.getDataGroup().getItem(sector,0,0).getH2F("raw_with_ToT_cut_sec"+sector).fill(wire*1.0,layer*1.0);                
+                if( ToT > minToT) {
+                    this.getDataGroup().getItem(sector,0,0).getH2F("raw_tot_sec"+sector).fill(wire*1.0,layer*1.0);                
                 }
 
                 this.getDataGroup().getItem(sector,0,0).getH1F("raw_reg_occ_sec"+sector).fill(region * 1.0);
@@ -223,7 +222,7 @@ public class DCmonitor extends DetectorMonitor {
                 this.getDataGroup().getItem(sector,sl,0).getH1F("tdc_sl_raw" + sector+ sl).fill(TDC,layer*1.0);
                 //if(TDC > 0) this.getDetectorSummary().getH1F("summary").fill(sector*1.0);
                 if(TDC > 0) this.getDataGroup().getItem(sector,0,0).getH1F("raw_summary").fill(sector*1.0);
-                this.getDataGroup().getItem(sector,0,0).getH1F("width"+sector).fill(width);
+                this.getDataGroup().getItem(sector,0,0).getH1F("tot"+sector).fill(ToT);
                 
                 if(this.getDataGroup().getItem(sector,0,0).getH1F("raw_summary").getEntries()>0) {
                     this.getDetectorSummary().getH1F("summary").setBinContent(sector-1, 100*this.getDataGroup().getItem(sector,0,0).getH1F("raw_summary").getBinContent(sector-1)/this.getNumberOfEvents()/112/12/3);
@@ -246,10 +245,10 @@ public class DCmonitor extends DetectorMonitor {
         if(this.getNumberOfEvents()>0) {
             for(int sector=1; sector <=6; sector++) {
                 H2F raw = this.getDataGroup().getItem(sector,0,0).getH2F("raw_sec"+sector);
-                H2F raw_with_ToT_cut = this.getDataGroup().getItem(sector,0,0).getH2F("raw_with_ToT_cut_sec"+sector);
+                H2F rawToT = this.getDataGroup().getItem(sector,0,0).getH2F("raw_tot_sec"+sector);
                 for(int loop = 0; loop < raw.getDataBufferSize(); loop++){
                     this.getDataGroup().getItem(sector,0,0).getH2F("occ_sec"+sector).setDataBufferBin(loop,100*raw.getDataBufferBin(loop)/this.getNumberOfEvents());
-                    this.getDataGroup().getItem(sector,0,0).getH2F("occ_with_ToT_cut_sec"+sector).setDataBufferBin(loop,100*raw_with_ToT_cut.getDataBufferBin(loop)/this.getNumberOfEvents());
+                    this.getDataGroup().getItem(sector,0,0).getH2F("occ_tot_sec"+sector).setDataBufferBin(loop,100*rawToT.getDataBufferBin(loop)/this.getNumberOfEvents());
                 }
             }
         }
@@ -272,7 +271,7 @@ public class DCmonitor extends DetectorMonitor {
                 }
                 this.getDetectorCanvas().getCanvas("occupancy").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
                 this.getDetectorCanvas().getCanvas("occupancyNorm").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
-                
+                this.getDetectorCanvas().getCanvas("occupancyToT").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);                
             }
         }   
     }
