@@ -188,6 +188,10 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         menuItem.getAccessibleContext().setAccessibleDescription("Set DC occupancy scale max");
         menuItem.addActionListener(this);
         settings.add(menuItem);
+        menuItem = new JMenuItem("Set DC ToT threshold");
+        menuItem.getAccessibleContext().setAccessibleDescription("Set DC ToT threshold");
+        menuItem.addActionListener(this);
+        settings.add(menuItem);
         menuItem = new JMenuItem("Set run number");
         menuItem.getAccessibleContext().setAccessibleDescription("Set run number");
         menuItem.addActionListener(this);
@@ -360,6 +364,9 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         }
         if("Set DC occupancy scale max".equals(e.getActionCommand())) {
            this.setDCRange(e.getActionCommand());
+        }
+        if("Set DC ToT threshold".equals(e.getActionCommand())) {
+           this.setDCToTThreshold(e.getActionCommand());
         }
         if("Set run number".equals(e.getActionCommand())) {
            this.setRunNumber(e.getActionCommand());
@@ -834,7 +841,6 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
     }
     
     private void setDCRange(String actionCommand) {
-        System.out.println("Set normalized DC occuopancy range maximum");
         String dcScale = (String) JOptionPane.showInputDialog(null, "Set normalized DC occuopancy range maximum to ", " ", JOptionPane.PLAIN_MESSAGE, null, null, "15");
         if (dcScale != null) { 
             double dcScaleMax= 0;
@@ -843,6 +849,19 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
             if (dcScaleMax > 0){ this.monitors.get("DC").max_occ = dcScaleMax;} 
             else {JOptionPane.showMessageDialog(null, "Value must be a positive number!");}   
         }
+        System.out.println("Set normalized DC occuopancy range maximum to " + dcScale);
+    }
+    
+    private void setDCToTThreshold(String actionCommand) {
+        String dcToT = (String) JOptionPane.showInputDialog(null, "Set DC ToT threshold ", " ", JOptionPane.PLAIN_MESSAGE, null, null, "20");
+        if (dcToT != null) { 
+            double dcToTmin= 0;
+            try {dcToTmin = Double.parseDouble(dcToT);} 
+            catch (NumberFormatException f) {JOptionPane.showMessageDialog(null, "Value must be a positive integer!");}
+            if (dcToTmin > 0){ this.monitors.get("DC").minToT = dcToTmin;} 
+            else {JOptionPane.showMessageDialog(null, "Value must be a positive number!");}   
+        }
+        System.out.println("Set DC ToT threshold to " + dcToT);
     }
     
     private void setRunNumber(String actionCommand) {
