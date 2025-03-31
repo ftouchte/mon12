@@ -1,5 +1,9 @@
 package org.clas.detectors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.clas.viewer.DetectorMonitor;
 import org.jlab.groot.data.H1F;
 import org.jlab.groot.data.H2F;
@@ -15,9 +19,13 @@ import org.jlab.utils.groups.IndexedTable;
 
 public class DCmonitor extends DetectorMonitor {
     
+    public IndexedTable tt = null;
+    public IndexedTable reverse = null;
+    
+
     public DCmonitor(String name) {
         super(name);
-        this.setDetectorTabNames("occupancy", "occupancyNorm", "occupancyToT", "occupancyPercent", "multiplicity", "tot", "tdc2d", "tdc1d_s");
+        this.setDetectorTabNames("occupancy", "occupancyNorm", "occupancyToT", "occupancyPercent", "multiplicity", "tot", "groupMult", "tdc2d", "tdc1d_s");
         this.useSectorButtons(true);
         this.init(false);
     }
@@ -25,6 +33,9 @@ public class DCmonitor extends DetectorMonitor {
     
     @Override
     public void createHistos() {
+
+        this.getReverseTT(runNumber);
+        
         // create histograms
         this.setNumberOfEvents(0);
         H1F summary = new H1F("summary","summary",6,0.5,6.5);
@@ -50,15 +61,15 @@ public class DCmonitor extends DetectorMonitor {
             occ.setTitleY("layer");
             occ.setTitle("sector "+sector);
 
-            H2F raw_with_ToT_cut = new H2F("raw_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
+            H2F rawTot = new H2F("raw_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
             raw.setTitleX("wire");
             raw.setTitleY("layer");
             raw.setTitle("sector "+sector);
             
-            H2F occ_with_ToT_cut = new H2F("occ_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
-            occ.setTitleX("wire");
-            occ.setTitleY("layer");
-            occ.setTitle("sector "+sector);
+            H2F occToT = new H2F("occ_tot_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
+            occToT.setTitleX("wire");
+            occToT.setTitleY("layer");
+            occToT.setTitle("sector "+sector);
             
 
             H1F reg_occ = new H1F("reg_occ_sec" + sector, "Sector " + sector + " region Occupancy", 3, 0.5, 3.5);
@@ -97,8 +108,13 @@ public class DCmonitor extends DetectorMonitor {
             tot.setTitleY("counts");
             tot.setTitle("tot sector " + sector);
             tot.setFillColor(3);
+
+            H2F groupMult = new H2F("group_mult_sec" + sector, "Sector " + sector + " Occupancy", 64, 0, 64, 85*3, 0, 85*3);
+            groupMult.setTitleX("multiplicity");
+            groupMult.setTitleY("group");
+            groupMult.setTitle("sector "+sector);
             
-            DataGroup dg = new DataGroup(8,1);
+            DataGroup dg = new DataGroup(11,1);
             dg.addDataSet(raw, 0);
             dg.addDataSet(occ, 1);
             dg.addDataSet(reg_occ, 2);
@@ -107,8 +123,9 @@ public class DCmonitor extends DetectorMonitor {
             dg.addDataSet(mult, 5);
             dg.addDataSet(tot, 6);
             dg.addDataSet(raw_summary, 7);
-            dg.addDataSet(raw_with_ToT_cut, 8);
-            dg.addDataSet(occ_with_ToT_cut, 9);
+            dg.addDataSet(rawTot, 8);
+            dg.addDataSet(occToT, 9);
+            dg.addDataSet(groupMult, 10);
             this.getDataGroup().add(dg, sector,0,0);
         }
         
@@ -116,6 +133,25 @@ public class DCmonitor extends DetectorMonitor {
         
     }
         
+    private void getReverseTT(int run) {
+        this.getCcdb().init("/daq/tt/dc");
+        tt = this.getCcdb().getConstants(run, "/daq/tt/dc");
+        reverse = new IndexedTable(4, "crate/I:slot/I:channel/I");
+        for(int row=0; row<tt.getRowCount(); row++) {
+            int crate   = Integer.valueOf((String)tt.getValueAt(row,0));
+            int slot    = Integer.valueOf((String)tt.getValueAt(row,1));
+            int channel = Integer.valueOf((String)tt.getValueAt(row,2));
+            int sector  = tt.getIntValue("sector",    crate,slot,channel);
+            int layer   = tt.getIntValue("layer",     crate,slot,channel);
+            int comp    = tt.getIntValue("component", crate,slot,channel);
+            int order   = tt.getIntValue("order",     crate,slot,channel);
+            reverse.addEntry(sector, layer, comp, order);
+            reverse.setIntValue(crate,   "crate",   sector, layer, comp, order);
+            reverse.setIntValue(slot,    "slot",    sector, layer, comp, order);
+            reverse.setIntValue(channel, "channel", sector, layer, comp, order);
+        }
+    }
+
     @Override
     public void plotHistos() {
         // initialize canvas and plot histograms
@@ -147,6 +183,9 @@ public class DCmonitor extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("tot").divide(2, 3);
         this.getDetectorCanvas().getCanvas("tot").setGridX(false);
         this.getDetectorCanvas().getCanvas("tot").setGridY(false);
+        this.getDetectorCanvas().getCanvas("groupMult").divide(2, 3);
+        this.getDetectorCanvas().getCanvas("groupMult").setGridX(false);
+        this.getDetectorCanvas().getCanvas("groupMult").setGridY(false);
         
         for(int sector=1; sector <=6; sector++) {
             this.getDetectorCanvas().getCanvas("occupancy").getPad(sector-1).getAxisZ().setRange(0.01, max_occ);
@@ -173,6 +212,9 @@ public class DCmonitor extends DetectorMonitor {
             this.getDetectorCanvas().getCanvas("multiplicity").draw(this.getDataGroup().getItem(sector,0,0).getH1F("multiplicity_sec"+ sector));
             this.getDetectorCanvas().getCanvas("tot").cd(sector-1);
             this.getDetectorCanvas().getCanvas("tot").draw(this.getDataGroup().getItem(sector,0,0).getH1F("tot"+ sector));
+            this.getDetectorCanvas().getCanvas("groupMult").cd(sector-1);
+            this.getDetectorCanvas().getCanvas("groupMult").getPad(sector-1).getAxisZ().setLog(getLogZ());
+            this.getDetectorCanvas().getCanvas("groupMult").draw(this.getDataGroup().getItem(sector,0,0).getH2F("group_mult_sec"+ sector));
             if(getActiveSector()==sector) {
                for(int sl=1; sl <=6; sl++) {
                    this.getDetectorCanvas().getCanvas("tdc1d").cd(sl-1);
@@ -189,6 +231,7 @@ public class DCmonitor extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("tdc2d").update();
         this.getDetectorCanvas().getCanvas("multiplicity").update();
         this.getDetectorCanvas().getCanvas("tot").update();
+        this.getDetectorCanvas().getCanvas("groupMult").update();
         
     }
 
@@ -201,16 +244,25 @@ public class DCmonitor extends DetectorMonitor {
             int rows = bank.rows();
             int[] nHitSector = {0,0,0,0,0,0};
 
-        //System.out.println("DC Bank");
-            
+            Map<Integer, Integer> multiplicity = new HashMap();
             for(int i = 0; i < rows; i++){
                 int    sector = bank.getByte("sector",i);
                 int     layer = bank.getByte("layer",i);
                 int      wire = bank.getShort("component",i);
+                int     order = bank.getByte("order",i);
                 int       TDC = bank.getInt("TDC",i);
                 int       ToT = bank.getInt("ToT",i);
                 int    region = (int) (layer-1)/12+1;
                 int        sl = (int) (layer-1)/6+1;
+                int crate = this.reverse.getIntValue("crate",   sector, layer, wire, order%10);
+                int slot  = this.reverse.getIntValue("slot",    sector, layer, wire, order%10);
+                int chan  = this.reverse.getIntValue("channel", sector, layer, wire, order%10);
+                int group = chan/16;
+                int hash = this.generateHashCode(crate, slot, group*16); 
+                if(multiplicity.containsKey(hash))
+                    multiplicity.merge(hash, 1, Integer::sum);
+                else
+                    multiplicity.put(hash, 1);            
                 
                 this.getDataGroup().getItem(sector,0,0).getH2F("raw_sec"+sector).fill(wire*1.0,layer*1.0);                
                 if( ToT > minToT) {
@@ -234,6 +286,16 @@ public class DCmonitor extends DetectorMonitor {
  
             for(int sec=1; sec<=6; sec++) {
                 this.getDataGroup().getItem(sec,0,0).getH1F("multiplicity_sec"+ sec).fill(nHitSector[sec-1]*1.0);
+            }
+            
+            for(int key : multiplicity.keySet()) {
+                int slot   = this.getL(key);
+                int group  = this.getC(key)/16;
+                int sector = this.tt.getIntValue("sector", this.getS(key), this.getL(key), this.getC(key));
+                int layer  = this.tt.getIntValue("layer",  this.getS(key), this.getL(key), this.getC(key));
+                int region = (layer-1)/12+1;
+                int sc = slot<10 ? (slot-3)*6+group : (slot-7)*6+group;
+                this.getDataGroup().getItem(sector,0,0).getH2F("group_mult_sec"+sector).fill(multiplicity.get(key),(region-1)*85+sc);
             }
             
        }   

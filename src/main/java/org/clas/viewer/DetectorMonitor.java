@@ -142,6 +142,23 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
 
     }
 
+    public int generateHashCode(int s, int l, int c){
+        return  ((s<<24)&0xFF000000)|
+                ((l<<16)&0x00FF0000)|(c&0x0000FFFF);
+    }
+        
+    public int getS(int hashCode) {
+        return (hashCode&0xFF000000)>>24;
+    }
+
+    public int getL(int hashCode) {
+        return (hashCode&0x00FF0000)>>16;
+    }
+
+    public int getC(int hashCode) {
+        return (hashCode&0x0000FFFF);
+    }
+        
     public void setJitter(String table) {
         IndexedTable jitter = this.getCcdb().getConstants(runNumber, table);
         this.period  = jitter.getDoubleValue("period",0,0,0);
