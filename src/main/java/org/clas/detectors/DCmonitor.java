@@ -134,7 +134,7 @@ public class DCmonitor extends DetectorMonitor {
     private void getReverseTT(int run) {
         this.getCcdb().init("/daq/tt/dc");
         tt = this.getCcdb().getConstants(run, "/daq/tt/dc");
-        System.out.print("Inverting the DC translation table...");
+        System.out.print("Inverting the DC translation table, this may take a few seconds ...");
         reverse = new IndexedTable(4, "crate/I:slot/I:channel/I");
         for(int row=0; row<tt.getRowCount(); row++) {
             int crate   = Integer.valueOf((String)tt.getValueAt(row,0));
