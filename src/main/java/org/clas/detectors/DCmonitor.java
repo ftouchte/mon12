@@ -16,10 +16,9 @@ import org.jlab.utils.groups.IndexedTable;
  */
 
 public class DCmonitor extends DetectorMonitor {
-    
+
     public IndexedTable tt = null;
     public IndexedTable reverse = null;
-    
 
     public DCmonitor(String name) {
         super(name);
@@ -28,7 +27,6 @@ public class DCmonitor extends DetectorMonitor {
         this.init(false);
     }
 
-    
     @Override
     public void createHistos() {
 
@@ -137,9 +135,9 @@ public class DCmonitor extends DetectorMonitor {
         System.err.print("Inverting DC translation table, this may take a few seconds ...");
         reverse = new IndexedTable(4, "crate/I:slot/I:channel/I");
         for(int row=0; row<tt.getRowCount(); row++) {
-            int crate   = Integer.valueOf((String)tt.getValueAt(row,0));
-            int slot    = Integer.valueOf((String)tt.getValueAt(row,1));
-            int channel = Integer.valueOf((String)tt.getValueAt(row,2));
+            int crate   = Integer.parseInt((String)tt.getValueAt(row,0));
+            int slot    = Integer.parseInt((String)tt.getValueAt(row,1));
+            int channel = Integer.parseInt((String)tt.getValueAt(row,2));
             int sector  = tt.getIntValue("sector",    crate,slot,channel);
             int layer   = tt.getIntValue("layer",     crate,slot,channel);
             int comp    = tt.getIntValue("component", crate,slot,channel);
