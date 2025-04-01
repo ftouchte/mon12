@@ -7,7 +7,7 @@ trigger_mask=0xffffffff
 min_current=-1
 
 $dir/mon12 \
- -tabs "CND:CTOF" \
+ -tabs "CND:CTOF:AHDC:ATOF" \
  -trigger $trigger_mask \
  -current $min_current \
  -batch 1 \
