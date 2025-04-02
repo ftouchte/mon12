@@ -124,6 +124,11 @@ public class DCmonitor extends DetectorMonitor {
         }
     }
 
+    @Override
+    public void runNumberChanged() {
+	    reverse = getReverseTT(forward);
+    }
+
     private static IndexedTable getReverseTT(IndexedTable tt) {
         System.err.print("Inverting DC translation table, this may take a few seconds ...");
         IndexedTable ret = new IndexedTable(4, "crate/I:slot/I:channel/I");
