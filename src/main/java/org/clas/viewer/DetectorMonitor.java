@@ -192,9 +192,9 @@ public class DetectorMonitor implements IDataEventListener, ActionListener {
 
     public void setRunNumber(int run) {
         if (run != this.runNumber) {
-	    this.runNumber = run;
-	    this.runNumberChanged();
-	}
+            this.runNumber = run;
+            this.runNumberChanged();
+        }
     }
 
     public void runNumberChanged() {

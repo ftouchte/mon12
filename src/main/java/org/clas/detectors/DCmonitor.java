@@ -8,6 +8,7 @@ import org.jlab.groot.data.H2F;
 import org.jlab.groot.group.DataGroup;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
+import org.jlab.utils.groups.IndexedList;
 import org.jlab.utils.groups.IndexedTable;
 
 /**
@@ -126,16 +127,16 @@ public class DCmonitor extends DetectorMonitor {
 
     @Override
     public void runNumberChanged() {
-	    reverse = getReverseTT(forward);
+        reverse = getReverseTT(forward);
     }
 
     private static IndexedTable getReverseTT(IndexedTable tt) {
         System.err.print("Inverting DC translation table, this may take a few seconds ...");
         IndexedTable ret = new IndexedTable(4, "crate/I:slot/I:channel/I");
-        for(int row=0; row<tt.getRowCount(); row++) {
-            int crate   = Integer.parseInt((String)tt.getValueAt(row,0));
-            int slot    = Integer.parseInt((String)tt.getValueAt(row,1));
-            int channel = Integer.parseInt((String)tt.getValueAt(row,2));
+        for(Object key : tt.getList().getMap().keySet()) {
+            int crate   = IndexedList.IndexGenerator.getIndex((long)key, 0);
+            int slot    = IndexedList.IndexGenerator.getIndex((long)key, 1);
+            int channel = IndexedList.IndexGenerator.getIndex((long)key, 2);
             int sector  = tt.getIntValue("sector",    crate,slot,channel);
             int layer   = tt.getIntValue("layer",     crate,slot,channel);
             int comp    = tt.getIntValue("component", crate,slot,channel);
@@ -146,13 +147,13 @@ public class DCmonitor extends DetectorMonitor {
             ret.setIntValue(channel, "channel", sector, layer, comp, order);
         }
         System.err.println("Done inverting DC translation table.");
-	return ret;
+        return ret;
     }
 
     @Override
     public void plotHistos() {
         // initialize canvas and plot histograms
-    	    
+
         this.getDetectorCanvas().getCanvas("occupancy").divide(2, 3);
         this.getDetectorCanvas().getCanvas("occupancy").setGridX(false);
         this.getDetectorCanvas().getCanvas("occupancy").setGridY(false);
@@ -235,8 +236,6 @@ public class DCmonitor extends DetectorMonitor {
     @Override
     public void processEvent(DataEvent event) {
                 
-	if (reverse == null) reverse = getReverseTT(forward);
-
         // process event info and save into data group
         if(event.hasBank("DC::tdc")==true){
             DataBank  bank = event.getBank("DC::tdc");
@@ -323,7 +322,7 @@ public class DCmonitor extends DetectorMonitor {
             }
  
             for(int sector=1; sector <=6; sector++) {
-            	H1F raw = this.getDataGroup().getItem(sector,0,0).getH1F("raw_reg_occ_sec"+sector);
+                H1F raw = this.getDataGroup().getItem(sector,0,0).getH1F("raw_reg_occ_sec"+sector);
                 H1F ave = this.getDataGroup().getItem(sector,0,0).getH1F("reg_occ_sec"+sector);
                 if(entries>0) {
                 for(int loop = 0; loop < 3; loop++){
