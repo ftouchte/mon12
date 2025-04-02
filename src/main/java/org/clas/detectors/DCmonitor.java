@@ -3,6 +3,7 @@ package org.clas.detectors;
 import java.util.HashMap;
 import java.util.Map;
 import org.clas.viewer.DetectorMonitor;
+import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.groot.data.H1F;
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.group.DataGroup;
@@ -32,7 +33,6 @@ public class DCmonitor extends DetectorMonitor {
     public void createHistos() {
 
         forward = this.getCcdb().getConstants(runNumber, "/daq/tt/dc");
-        reverse = getReverseTT(forward);
         
         // create histograms
         this.setNumberOfEvents(0);
@@ -231,6 +231,8 @@ public class DCmonitor extends DetectorMonitor {
     @Override
     public void processEvent(DataEvent event) {
                 
+	if (reverse == null) reverse = getReverseTT(forward);
+
         // process event info and save into data group
         if(event.hasBank("DC::tdc")==true){
             DataBank  bank = event.getBank("DC::tdc");
