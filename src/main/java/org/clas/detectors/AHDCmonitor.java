@@ -88,11 +88,11 @@ public class AHDCmonitor  extends DetectorMonitor {
         // initialize canvas and create histograms
         this.setNumberOfEvents(0);
 
-        this.getDetectorCanvas().getCanvas("charge").divide(1, 3);
+        this.getDetectorCanvas().getCanvas("charge").divide(1, 4);
         this.getDetectorCanvas().getCanvas("charge").setGridX(false);
         this.getDetectorCanvas().getCanvas("charge").setGridY(false);
 
-        this.getDetectorCanvas().getCanvas("time").divide(1, 4);
+        this.getDetectorCanvas().getCanvas("time").divide(1, 3);
         this.getDetectorCanvas().getCanvas("time").setGridX(false);
         this.getDetectorCanvas().getCanvas("time").setGridY(false);
 
@@ -132,7 +132,12 @@ public class AHDCmonitor  extends DetectorMonitor {
         hist2d_integral.setTitleY("layer number");
         hist2d_integral.setTitleX("wire number");
         hist2d_integral.setTitle("< integral >");
-
+		// put here because it is related to the charge
+        H2F hist2d_timeOverThreshold = new H2F("timeOverThreshold", "timeOverThreshold", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_raw_timeOverThreshold = new H2F("raw_timeOverThreshold", "raw_timeOverThreshold", 100, 1, 100, 8, 1, 9);
+        hist2d_timeOverThreshold.setTitleY("layer number");
+        hist2d_timeOverThreshold.setTitleX("wire number");
+        hist2d_timeOverThreshold.setTitle("< timeOverThreshold >");
         // time
         H2F hist2d_timeMax = new H2F("timeMax", "timeMax", 100, 1, 100, 8, 1, 9);
         H2F hist2d_raw_timeMax = new H2F("raw_timeMax", "raw_timeMax", 100, 1, 100, 8, 1, 9);
@@ -146,11 +151,6 @@ public class AHDCmonitor  extends DetectorMonitor {
         hist2d_leadingEdgeTime.setTitleX("wire number");
         hist2d_leadingEdgeTime.setTitle("< leadingEdgeTime >");
 
-        H2F hist2d_timeOverThreshold = new H2F("timeOverThreshold", "timeOverThreshold", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_timeOverThreshold = new H2F("raw_timeOverThreshold", "raw_timeOverThreshold", 100, 1, 100, 8, 1, 9);
-        hist2d_timeOverThreshold.setTitleY("layer number");
-        hist2d_timeOverThreshold.setTitleX("wire number");
-        hist2d_timeOverThreshold.setTitle("< timeOverThreshold >");
 
         H2F hist2d_constantFractionTime = new H2F("constantFractionTime", "constantFractionTime", 100, 1, 100, 8, 1, 9);
         H2F hist2d_raw_constantFractionTime = new H2F("raw_constantFractionTime", "raw_constantFractionTime", 100, 1, 100, 8, 1, 9);
@@ -279,6 +279,9 @@ public class AHDCmonitor  extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("charge").cd(2);
         //this.getDetectorCanvas().getCanvas("charge").getPad(2).getAxisZ().setLog(true);
         this.getDetectorCanvas().getCanvas("charge").draw(this.getDataGroup().getItem(0,0,0).getH2F("integral"));
+        this.getDetectorCanvas().getCanvas("charge").cd(3);
+        //this.getDetectorCanvas().getCanvas("charge").getPad(2).getAxisZ().setLog(getLogZ());
+        this.getDetectorCanvas().getCanvas("charge").draw(this.getDataGroup().getItem(0,0,0).getH2F("timeOverThreshold"));
         this.getDetectorCanvas().getCanvas("charge").update();
 
         this.getDetectorCanvas().getCanvas("time").cd(0);
@@ -288,9 +291,6 @@ public class AHDCmonitor  extends DetectorMonitor {
         //this.getDetectorCanvas().getCanvas("time").getPad(1).getAxisZ().setLog(getLogZ());
         this.getDetectorCanvas().getCanvas("time").draw(this.getDataGroup().getItem(0,0,0).getH2F("leadingEdgeTime"));
         this.getDetectorCanvas().getCanvas("time").cd(2);
-        //this.getDetectorCanvas().getCanvas("time").getPad(2).getAxisZ().setLog(getLogZ());
-        this.getDetectorCanvas().getCanvas("time").draw(this.getDataGroup().getItem(0,0,0).getH2F("timeOverThreshold"));
-        this.getDetectorCanvas().getCanvas("time").cd(3);
         ///this.getDetectorCanvas().getCanvas("time").getPad(3).getAxisZ().setLog(getLogZ());
         this.getDetectorCanvas().getCanvas("time").draw(this.getDataGroup().getItem(0,0,0).getH2F("constantFractionTime"));
         this.getDetectorCanvas().getCanvas("time").update();
