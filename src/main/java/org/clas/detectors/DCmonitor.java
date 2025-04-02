@@ -3,7 +3,6 @@ package org.clas.detectors;
 import java.util.HashMap;
 import java.util.Map;
 import org.clas.viewer.DetectorMonitor;
-import org.jlab.detector.calib.utils.ConstantsManager;
 import org.jlab.groot.data.H1F;
 import org.jlab.groot.data.H2F;
 import org.jlab.groot.group.DataGroup;
