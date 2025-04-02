@@ -8,6 +8,7 @@ import org.jlab.groot.data.H2F;
 import org.jlab.groot.group.DataGroup;
 import org.jlab.io.base.DataBank;
 import org.jlab.io.base.DataEvent;
+import org.jlab.utils.groups.IndexedList;
 import org.jlab.utils.groups.IndexedTable;
 
 /**
@@ -17,7 +18,7 @@ import org.jlab.utils.groups.IndexedTable;
 
 public class DCmonitor extends DetectorMonitor {
 
-    public IndexedTable tt = null;
+    public IndexedTable forward = null;
     public IndexedTable reverse = null;
 
     public DCmonitor(String name) {
@@ -25,12 +26,13 @@ public class DCmonitor extends DetectorMonitor {
         this.setDetectorTabNames("occupancy", "occupancyNorm", "occupancyToT", "occupancyPercent", "multiplicity", "tot", "groupMult", "tdc2d", "tdc1d_s");
         this.useSectorButtons(true);
         this.init(false);
+        this.getCcdb().init("/daq/tt/dc");
     }
 
     @Override
     public void createHistos() {
 
-        this.getReverseTT(runNumber);
+        forward = this.getCcdb().getConstants(runNumber, "/daq/tt/dc");
         
         // create histograms
         this.setNumberOfEvents(0);
@@ -44,7 +46,6 @@ public class DCmonitor extends DetectorMonitor {
         this.setDetectorSummary(sum);
         
         H1F raw_summary = new H1F("raw_summary","raw_summary",6,0.5,6.5);
-        
         
         for(int sector=1; sector <= 6; sector++) {
             H2F raw = new H2F("raw_sec" + sector, "Sector " + sector + " Occupancy", 112, 0.5, 112.5, 36, 0.5, 36.5);
@@ -66,14 +67,12 @@ public class DCmonitor extends DetectorMonitor {
             occToT.setTitleX("wire");
             occToT.setTitleY("layer");
             occToT.setTitle("sector "+sector);
-            
 
             H1F reg_occ = new H1F("reg_occ_sec" + sector, "Sector " + sector + " region Occupancy", 3, 0.5, 3.5);
             reg_occ.setTitleX("region");
             reg_occ.setTitleY("occupancy %");
             reg_occ.setTitle("sector "+sector);
             reg_occ.setFillColor(3);
-
             
             H1F raw_reg_occ = new H1F("raw_reg_occ_sec" + sector, "Sector " + sector + " region Occupancy", 3, 0.5, 3.5);
             raw_reg_occ.setTitleX("region");
@@ -124,36 +123,37 @@ public class DCmonitor extends DetectorMonitor {
             dg.addDataSet(groupMult, 10);
             this.getDataGroup().add(dg, sector,0,0);
         }
-        
-       
-        
     }
-        
-    private void getReverseTT(int run) {
-        this.getCcdb().init("/daq/tt/dc");
-        tt = this.getCcdb().getConstants(run, "/daq/tt/dc");
+
+    @Override
+    public void runNumberChanged() {
+        reverse = getReverseTT(forward);
+    }
+
+    private static IndexedTable getReverseTT(IndexedTable tt) {
         System.err.print("Inverting DC translation table, this may take a few seconds ...");
-        reverse = new IndexedTable(4, "crate/I:slot/I:channel/I");
-        for(int row=0; row<tt.getRowCount(); row++) {
-            int crate   = Integer.parseInt((String)tt.getValueAt(row,0));
-            int slot    = Integer.parseInt((String)tt.getValueAt(row,1));
-            int channel = Integer.parseInt((String)tt.getValueAt(row,2));
+        IndexedTable ret = new IndexedTable(4, "crate/I:slot/I:channel/I");
+        for(Object key : tt.getList().getMap().keySet()) {
+            int crate   = IndexedList.IndexGenerator.getIndex((long)key, 0);
+            int slot    = IndexedList.IndexGenerator.getIndex((long)key, 1);
+            int channel = IndexedList.IndexGenerator.getIndex((long)key, 2);
             int sector  = tt.getIntValue("sector",    crate,slot,channel);
             int layer   = tt.getIntValue("layer",     crate,slot,channel);
             int comp    = tt.getIntValue("component", crate,slot,channel);
             int order   = tt.getIntValue("order",     crate,slot,channel);
-            reverse.addEntry(sector, layer, comp, order);
-            reverse.setIntValue(crate,   "crate",   sector, layer, comp, order);
-            reverse.setIntValue(slot,    "slot",    sector, layer, comp, order);
-            reverse.setIntValue(channel, "channel", sector, layer, comp, order);
+            ret.addEntry(sector, layer, comp, order);
+            ret.setIntValue(crate,   "crate",   sector, layer, comp, order);
+            ret.setIntValue(slot,    "slot",    sector, layer, comp, order);
+            ret.setIntValue(channel, "channel", sector, layer, comp, order);
         }
         System.err.println("Done inverting DC translation table.");
+        return ret;
     }
 
     @Override
     public void plotHistos() {
         // initialize canvas and plot histograms
-    	    
+
         this.getDetectorCanvas().getCanvas("occupancy").divide(2, 3);
         this.getDetectorCanvas().getCanvas("occupancy").setGridX(false);
         this.getDetectorCanvas().getCanvas("occupancy").setGridY(false);
@@ -289,8 +289,8 @@ public class DCmonitor extends DetectorMonitor {
             for(int key : multiplicity.keySet()) {
                 int slot   = this.getL(key);
                 int group  = this.getC(key)/16;
-                int sector = this.tt.getIntValue("sector", this.getS(key), this.getL(key), this.getC(key));
-                int layer  = this.tt.getIntValue("layer",  this.getS(key), this.getL(key), this.getC(key));
+                int sector = this.forward.getIntValue("sector", this.getS(key), this.getL(key), this.getC(key));
+                int layer  = this.forward.getIntValue("layer",  this.getS(key), this.getL(key), this.getC(key));
                 int region = (layer-1)/12+1;
                 int sc = slot<10 ? (slot-3)*6+group : (slot-7)*6+group;
                 this.getDataGroup().getItem(sector,0,0).getH2F("group_mult_sec"+sector).fill(multiplicity.get(key),(region-1)*85+sc);
@@ -322,7 +322,7 @@ public class DCmonitor extends DetectorMonitor {
             }
  
             for(int sector=1; sector <=6; sector++) {
-            	H1F raw = this.getDataGroup().getItem(sector,0,0).getH1F("raw_reg_occ_sec"+sector);
+                H1F raw = this.getDataGroup().getItem(sector,0,0).getH1F("raw_reg_occ_sec"+sector);
                 H1F ave = this.getDataGroup().getItem(sector,0,0).getH1F("reg_occ_sec"+sector);
                 if(entries>0) {
                 for(int loop = 0; loop < 3; loop++){
