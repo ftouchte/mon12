@@ -31,8 +31,6 @@ public class DCmonitor extends DetectorMonitor {
 
     @Override
     public void createHistos() {
-
-        forward = this.getCcdb().getConstants(runNumber, "/daq/tt/dc");
         
         // create histograms
         this.setNumberOfEvents(0);
@@ -127,6 +125,7 @@ public class DCmonitor extends DetectorMonitor {
 
     @Override
     public void runNumberChanged() {
+        forward = this.getCcdb().getConstants(runNumber, "/daq/tt/dc");
         reverse = getReverseTT(forward);
     }
 
