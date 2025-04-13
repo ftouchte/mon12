@@ -202,7 +202,7 @@ public class ATOFmonitor extends DetectorMonitor {
     DataGroup wedgeTDCGroup = new DataGroup();
     for (int sector = 0; sector < 15; sector++) {
       String histName = "wedgeTDC_sector_" + sector;
-      H2F wedgeTDC = new H2F(histName, "Wedge TDC Sector " + sector, 100, 0, 2000,40,-0.5,39.5);
+      H2F wedgeTDC = new H2F(histName, "Wedge TDC Sector " + sector, 100, 100, 300,40,-0.5,39.5);
       wedgeTDC.setTitleX("TDC [ns]");
       wedgeTDC.setTitleY("wedge_i");
       wedgeTDC.setTitle("M" + sector + " Wedge TDCs");
@@ -215,7 +215,7 @@ public class ATOFmonitor extends DetectorMonitor {
     DataGroup barTDCGroup = new DataGroup();
     for (int sector = 0; sector < 15; sector++) {
       String histName = "barTDC_sector_" + sector;
-      H2F barTDC = new H2F(histName, "Bar TDC Sector " + sector, 100, 0, 2000,8,-0.5,7.5);
+      H2F barTDC = new H2F(histName, "Bar TDC Sector " + sector, 100, 100, 300,8,-0.5,7.5);
       barTDC.setTitleX("TDC [ns]");
       barTDC.setTitleY("bar_i");
       barTDC.setTitle("M" + sector + " Bar TDCs");
@@ -228,7 +228,7 @@ public class ATOFmonitor extends DetectorMonitor {
     DataGroup wedgeToTGroup = new DataGroup();
     for (int sector = 0; sector < 15; sector++) {
       String histName = "wedgeToT_sector_" + sector;
-      H2F wedgeToT = new H2F(histName, "Wedge ToT Sector " + sector, 100, 0, 2000,40,-0.5,39.5);
+      H2F wedgeToT = new H2F(histName, "Wedge ToT Sector " + sector, 100, 0, 200,40,-0.5,39.5);
       wedgeToT.setTitleX("ToT [ns]");
       wedgeToT.setTitleY("wedge_i");
       wedgeToT.setTitle("M" + sector + " Wedge ToTs");
@@ -251,7 +251,7 @@ public class ATOFmonitor extends DetectorMonitor {
     }
 
     // BarSumDiff Histograms
-    int barsum_peak = 36000; // peak location used to center the histogram binning:
+    int barsum_peak = 24000; // peak location used to center the histogram binning:
     H1F barSum = new H1F("barSum", "Bar TDC Sum", 200, barsum_peak-20000, barsum_peak+20000); // Assuming sum range
     barSum.setTitleX("Sum of TDCs (Order0 + Order1)");
     barSum.setTitleY("Counts");
@@ -259,7 +259,7 @@ public class ATOFmonitor extends DetectorMonitor {
     // Uncomment if you have a method to disable statistics box
     // barSum.setOptStat(0);
     float barsumtime_peak = 36000*tdc_bin_time; // peak location used to center the histogram binning:
-    H1F barSumTime = new H1F("barSumTime", "Bar Sum Time", 200, 0,4000);//barsum_peak*tdc_bin_time-20000*tdc_bin_time, barsum_peak*tdc_bin_time+20000*tdc_bin_time); // Assuming sum range
+    H1F barSumTime = new H1F("barSumTime", "Bar Sum Time", 200, 0,800);//barsum_peak*tdc_bin_time-20000*tdc_bin_time, barsum_peak*tdc_bin_time+20000*tdc_bin_time); // Assuming sum range
     barSumTime.setTitleX("Sum of Times (Order0 + Order1)");
     barSumTime.setTitleY("Counts");
     barSumTime.setFillColor(46);
@@ -273,7 +273,7 @@ public class ATOFmonitor extends DetectorMonitor {
     barDiff2.setTitleY("Counts/1k events");
     barDiff2.setFillColor(38);
 
-    H1F barDiffTime = new H1F("barDiffTime", "Bar TDC Difference", 200, -5, 7);
+    H1F barDiffTime = new H1F("barDiffTime", "Bar TDC Difference", 200, -20, 20);
     barDiffTime.setTitleX("Difference of Times (Order1 - Order0)");
     barDiffTime.setTitleY("Counts");
     barDiffTime.setFillColor(38);
