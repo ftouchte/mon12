@@ -109,7 +109,7 @@ public class AHDCmonitor  extends DetectorMonitor {
         this.getDetectorCanvas().getCanvas("1D").setGridY(false);
 
         // summary
-        H2F summary = new H2F("summary","summary", 100, 1, 100, 8, 1, 9);
+        H2F summary = new H2F("summary","summary", 101, 0, 101, 8, 1, 9);
         summary.setTitleX("wire number");
         summary.setTitleY("layer number");
         summary.setTitle("AHDC (occupancy)");
@@ -119,50 +119,50 @@ public class AHDCmonitor  extends DetectorMonitor {
         this.setDetectorSummary(sum);
 
         // charge
-        H2F hist2d_occupancy = new H2F("occupancy", "occupancy", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_occupancy = new H2F("raw_occupancy", "raw_occupancy", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_occupancy = new H2F("occupancy", "occupancy", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_occupancy = new H2F("raw_occupancy", "raw_occupancy", 101, 0, 101, 8, 1, 9);
         hist2d_occupancy.setTitleY("layer number");
         hist2d_occupancy.setTitleX("wire number");
         hist2d_occupancy.setTitle("occupancy [%]");
 
-        H2F hist2d_adcMax = new H2F("adcMax", "adcMax", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_adcMax = new H2F("raw_adcMax", "raw_adcMax", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_adcMax = new H2F("adcMax", "adcMax", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_adcMax = new H2F("raw_adcMax", "raw_adcMax", 101, 0, 101, 8, 1, 9);
         hist2d_adcMax.setTitleY("layer number");
         hist2d_adcMax.setTitleX("wire number");
         hist2d_adcMax.setTitle("< adcMax >");
 
-        H2F hist2d_integral = new H2F("integral", "integral", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_integral = new H2F("raw_integral", "raw_integral", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_integral = new H2F("integral", "integral", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_integral = new H2F("raw_integral", "raw_integral", 101, 0, 101, 8, 1, 9);
         hist2d_integral.setTitleY("layer number");
         hist2d_integral.setTitleX("wire number");
         hist2d_integral.setTitle("< integral >");
 		// put here because it is related to the charge
-        H2F hist2d_timeOverThreshold = new H2F("timeOverThreshold", "timeOverThreshold", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_timeOverThreshold = new H2F("raw_timeOverThreshold", "raw_timeOverThreshold", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_timeOverThreshold = new H2F("timeOverThreshold", "timeOverThreshold", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_timeOverThreshold = new H2F("raw_timeOverThreshold", "raw_timeOverThreshold", 101, 0, 101, 8, 1, 9);
         hist2d_timeOverThreshold.setTitleY("layer number");
         hist2d_timeOverThreshold.setTitleX("wire number");
         hist2d_timeOverThreshold.setTitle("< timeOverThreshold >");
         // time
-        H2F hist2d_timeMax = new H2F("timeMax", "timeMax", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_timeMax = new H2F("raw_timeMax", "raw_timeMax", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_timeMax = new H2F("timeMax", "timeMax", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_timeMax = new H2F("raw_timeMax", "raw_timeMax", 101, 0, 101, 8, 1, 9);
         hist2d_timeMax.setTitleY("layer number");
         hist2d_timeMax.setTitleX("wire number");
         hist2d_timeMax.setTitle("< timeMax >");
 
-        H2F hist2d_leadingEdgeTime = new H2F("leadingEdgeTime", "leadingEdgeTime", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_leadingEdgeTime = new H2F("raw_leadingEdgeTime", "raw_leadingEdgeTime", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_leadingEdgeTime = new H2F("leadingEdgeTime", "leadingEdgeTime", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_leadingEdgeTime = new H2F("raw_leadingEdgeTime", "raw_leadingEdgeTime", 101, 0, 101, 8, 1, 9);
         hist2d_leadingEdgeTime.setTitleY("layer number");
         hist2d_leadingEdgeTime.setTitleX("wire number");
         hist2d_leadingEdgeTime.setTitle("< leadingEdgeTime >");
 
-        H2F hist2d_constantFractionTime = new H2F("constantFractionTime", "constantFractionTime", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_constantFractionTime = new H2F("raw_constantFractionTime", "raw_constantFractionTime", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_constantFractionTime = new H2F("constantFractionTime", "constantFractionTime", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_constantFractionTime = new H2F("raw_constantFractionTime", "raw_constantFractionTime", 101, 0, 101, 8, 1, 9);
         hist2d_constantFractionTime.setTitleY("layer number");
         hist2d_constantFractionTime.setTitleX("wire number");
         hist2d_constantFractionTime.setTitle("< constantFractionTime >");
 
-        H2F hist2d_wftime = new H2F("wftime2d", "wftime2d", 100, 1, 100, 8, 1, 9);
-        H2F hist2d_raw_wftime = new H2F("raw_wftime2d", "raw_wftime2d", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_wftime = new H2F("wftime2d", "wftime2d", 101, 0, 101, 8, 1, 9);
+        H2F hist2d_raw_wftime = new H2F("raw_wftime2d", "raw_wftime2d", 101, 0, 101, 8, 1, 9);
         hist2d_wftime.setTitleY("layer number");
         hist2d_wftime.setTitleX("wire number");
         hist2d_wftime.setTitle("< wftime >");
@@ -201,19 +201,19 @@ public class AHDCmonitor  extends DetectorMonitor {
         occupancy_vs_layer.setTitleY("wire occupancy");
         occupancy_vs_layer.setTitleX("layer");
 
-        H2F hist2d_8layer_hits = new H2F("hist2d_8layer_hits", "hits for events with all 8 layers firing", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_8layer_hits = new H2F("hist2d_8layer_hits", "hits for events with all 8 layers firing", 101, 0, 101, 8, 1, 9);
         hist2d_8layer_hits.setTitleY("layer number");
         hist2d_8layer_hits.setTitleX("wire number");
 
-        H2F hist2d_8layer_occ = new H2F("hist2d_8layer_occ", "occupancy for events with all 8 layers firing", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_8layer_occ = new H2F("hist2d_8layer_occ", "occupancy for events with all 8 layers firing", 101, 0, 101, 8, 1, 9);
         hist2d_8layer_hits.setTitleY("layer number");
         hist2d_8layer_hits.setTitleX("wire number");
 
-        H2F hist2d_7layer_hits = new H2F("hist2d_7layer_hits", "hits for events with 7-8/8 layers firing", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_7layer_hits = new H2F("hist2d_7layer_hits", "hits for events with 7-8/8 layers firing", 101, 0, 101, 8, 1, 9);
         hist2d_7layer_hits.setTitleY("layer number");
         hist2d_7layer_hits.setTitleX("wire number");
 
-        H2F hist2d_6layer_hits = new H2F("hist2d_6layer_hits", "hits for events with 4-6/8 layers firing", 100, 1, 100, 8, 1, 9);
+        H2F hist2d_6layer_hits = new H2F("hist2d_6layer_hits", "hits for events with 4-6/8 layers firing", 101, 0, 101, 8, 1, 9);
         hist2d_6layer_hits.setTitleY("layer number");
         hist2d_6layer_hits.setTitleX("wire number");
 
