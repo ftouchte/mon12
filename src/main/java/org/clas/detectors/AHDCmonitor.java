@@ -15,7 +15,7 @@ import org.jlab.io.base.DataEvent;
  */
 public class AHDCmonitor  extends DetectorMonitor {
 
-    static final int[] layer_wires  = {94,112,112,144,144,174,174,198};
+    static final int[] layer_wires  = {47,56,56,72,72,87,87,99};
 
     public AHDCmonitor(String name) {
         super(name);
