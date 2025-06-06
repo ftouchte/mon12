@@ -580,7 +580,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
     	DataEvent hipo = event;
         if (event instanceof EvioDataEvent) {
             Event dump = this.clasDecoder.getDataEvent(event);
-            Bank header = this.clasDecoder.createHeaderBank(this.ccdbRunNumber, getEventNumber(event), 0, 0);
+            Bank header = this.clasDecoder.createHeaderBank(this.ccdbRunNumber, getEventNumber(event), (double)0, (double)0);
             Bank trigger = this.clasDecoder.createTriggerBank();
             Bank helicity = this.clasDecoder.createHelicityDecoderBank((EvioDataEvent)event);
             Bank onlineHelicity = this.clasDecoder.createOnlineHelicityBank();
