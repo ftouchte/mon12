@@ -2,14 +2,11 @@ package org.clas.viewer;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,8 +15,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -309,7 +304,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         splitPanel.setLeftComponent(CLAS12View);
         splitPanel.setRightComponent(this.CLAS12Canvas);
         JTextPane clas12Text   = new JTextPane();
-        clas12Text.setText("CLAS12\n monitoring plots\n V7.11\n");
+        clas12Text.setText("MON12 v7.11\n");
         clas12Text.setEditable(false);       
         this.clas12Textinfo.setEditable(false);
         this.clas12Textinfo.setFont(new Font("Avenir",Font.PLAIN,16));
@@ -321,10 +316,9 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         clas12Text.setBackground(CLAS12View.getBackground());
         clas12Text.setFont(new Font("Avenir",Font.PLAIN,20));
         JLabel clas12Design = Util.getImage("/images/CLAS-frame-high.jpg",0.1);
-        CLAS12View.add(this.clas12Textinfo,BorderLayout.BEFORE_FIRST_LINE );
-        CLAS12View.add(clas12Design);
+        CLAS12View.add(this.clas12Textinfo,BorderLayout.NORTH );
+        CLAS12View.add(clas12Design,BorderLayout.CENTER);
         CLAS12View.add(clas12Text,BorderLayout.PAGE_END);
-
         this.tabbedpane.add(splitPanel,"Summary");
     }
     
