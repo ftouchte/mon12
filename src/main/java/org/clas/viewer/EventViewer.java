@@ -2,24 +2,21 @@ package org.clas.viewer;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -308,9 +305,16 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         JSplitPane splitPanel = new JSplitPane();
         splitPanel.setLeftComponent(CLAS12View);
         splitPanel.setRightComponent(this.CLAS12Canvas);
-        JTextPane clas12Text   = new JTextPane();
-        clas12Text.setText("CLAS12\n monitoring plots\n V7.11\n");
-        clas12Text.setEditable(false);       
+        JTextPane clas12Text = new JTextPane();
+        clas12Text.setEditable(false);
+        try {
+            Properties p = new Properties();
+            p.load(EventViewer.class.getResourceAsStream("/META-INF/maven/org.clas.detector/clas12mon/pom.properties"));
+            clas12Text.setText("MON12 v"+p.getProperty("version"));
+        } catch (IOException ex) {
+            Logger.getLogger(EventViewer.class.getName()).log(Level.SEVERE, null, ex);
+            clas12Text.setText("MON12 v?.??\n");
+        }
         this.clas12Textinfo.setEditable(false);
         this.clas12Textinfo.setFont(new Font("Avenir",Font.PLAIN,16));
         this.clas12Textinfo.setBackground(CLAS12View.getBackground());
@@ -320,11 +324,12 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         styledDoc.setParagraphAttributes(0, styledDoc.getLength(), center, false);
         clas12Text.setBackground(CLAS12View.getBackground());
         clas12Text.setFont(new Font("Avenir",Font.PLAIN,20));
-        JLabel clas12Design = this.getImage("https://www.jlab.org/Hall-B/clas12-web/sidebar/clas12-design.jpg",0.08);
-        CLAS12View.add(this.clas12Textinfo,BorderLayout.BEFORE_FIRST_LINE );
-        CLAS12View.add(clas12Design);
-        CLAS12View.add(clas12Text,BorderLayout.PAGE_END);
-
+        JLabel clas12Design = Util.getImage("/images/CLAS-frame-high.jpg",0.1);
+        CLAS12View.add(this.clas12Textinfo,BorderLayout.NORTH );
+        JPanel x = new JPanel(new BorderLayout());
+        x.add(clas12Design,BorderLayout.NORTH);
+        x.add(clas12Text,BorderLayout.SOUTH);
+        CLAS12View.add(x,BorderLayout.SOUTH);
         this.tabbedpane.add(splitPanel,"Summary");
     }
     
@@ -532,22 +537,6 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
                 JOptionPane.showMessageDialog(null, "Value must be a positive integer!");
             }
         }
-    }
-        
-    private JLabel getImage(String path, double scale) {
-        Image image = null;
-        try {
-            URL url = new URL(path);
-            image = ImageIO.read(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Picture upload from " + path + " failed");
-        }
-        ImageIcon imageIcon = new ImageIcon(image);
-        double width = imageIcon.getIconWidth() * scale;
-        double height = imageIcon.getIconHeight() * scale;
-        imageIcon = new ImageIcon(image.getScaledInstance((int) width, (int) height, Image.SCALE_SMOOTH));
-        return new JLabel(imageIcon);
     }
 
     private int getEventNumber(DataEvent event) {
