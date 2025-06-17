@@ -7,11 +7,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -303,9 +305,16 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         JSplitPane splitPanel = new JSplitPane();
         splitPanel.setLeftComponent(CLAS12View);
         splitPanel.setRightComponent(this.CLAS12Canvas);
-        JTextPane clas12Text   = new JTextPane();
-        clas12Text.setText("MON12 v7.11\n");
-        clas12Text.setEditable(false);       
+        JTextPane clas12Text = new JTextPane();
+        clas12Text.setEditable(false);
+        try {
+            Properties p = new Properties();
+            p.load(EventViewer.class.getResourceAsStream("/META-INF/maven/org.clas.detector/clas12mon/pom.properties"));
+            clas12Text.setText("MON12 v"+p.getProperty("version"));
+        } catch (IOException ex) {
+            Logger.getLogger(EventViewer.class.getName()).log(Level.SEVERE, null, ex);
+            clas12Text.setText("MON12 v?.??\n");
+        }
         this.clas12Textinfo.setEditable(false);
         this.clas12Textinfo.setFont(new Font("Avenir",Font.PLAIN,16));
         this.clas12Textinfo.setBackground(CLAS12View.getBackground());
