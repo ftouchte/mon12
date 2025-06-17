@@ -317,8 +317,10 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         clas12Text.setFont(new Font("Avenir",Font.PLAIN,20));
         JLabel clas12Design = Util.getImage("/images/CLAS-frame-high.jpg",0.1);
         CLAS12View.add(this.clas12Textinfo,BorderLayout.NORTH );
-        CLAS12View.add(clas12Design,BorderLayout.CENTER);
-        CLAS12View.add(clas12Text,BorderLayout.PAGE_END);
+        JPanel x = new JPanel(new BorderLayout());
+        x.add(clas12Design,BorderLayout.NORTH);
+        x.add(clas12Text,BorderLayout.SOUTH);
+        CLAS12View.add(x,BorderLayout.SOUTH);
         this.tabbedpane.add(splitPanel,"Summary");
     }
     
