@@ -56,7 +56,7 @@ import org.jlab.jlog.LogEntry;
 import org.jlab.utils.benchmark.BenchmarkTimer;
 import org.jlab.utils.options.OptionParser;
 
-        
+
 /**
  *
  * @author ziegler
@@ -225,8 +225,8 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
 
         String[] triggers = { "Electron OR", "Electron Sec 1","Electron Sec 2","Electron Sec 3",
                         "Electron Sec 4","Electron Sec 5","Electron Sec 6",
-		        "","","","","","","","","","","","","","","","","","","","","","","","",
-		        "Random Pulser"};    
+                        "","","","","","","","","","","","","","","","","","","","","","","","",
+                        "Random Pulser"};    
         
         JMenu trigBitsBeam = new JMenu("TriggerBits");
         trigBitsBeam.getAccessibleContext().setAccessibleDescription("Select Trigger Bits");        
@@ -251,7 +251,6 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
             boolean bstate = ((this.triggerMask >> i) & 1) == 1;
             bb.setState(bstate);
             trigBitsBeam.add(bb); 
-        	        	
         }
         menuBar.add(trigBitsBeam); 
     }
@@ -544,13 +543,19 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         return bank != null ? bank.getInt("event", 0): this.eventCounter;
     }
 
+    private int getEventNumber(Event event) {
+        Bank bank = new Bank(schemaFactory.getSchema("RUN::config"));
+        event.read(bank);
+        return bank.getRows()>0 ? bank.getInt("event", 0): this.eventCounter;
+    }
+
     private void copyHitList(String k, String mon1, String mon2) {
-    	if (k == null ? mon1 != null : !k.equals(mon1)) return;
-    	this.monitors.get(mon1).ttdcs = this.monitors.get(mon2).ttdcs;
-    	this.monitors.get(mon1).ftdcs = this.monitors.get(mon2).ftdcs;
-    	this.monitors.get(mon1).fadcs = this.monitors.get(mon2).fadcs;
-   	this.monitors.get(mon1).fapmt = this.monitors.get(mon2).fapmt;
-    	this.monitors.get(mon1).ftpmt = this.monitors.get(mon2).ftpmt;
+        if (k == null ? mon1 != null : !k.equals(mon1)) return;
+        this.monitors.get(mon1).ttdcs = this.monitors.get(mon2).ttdcs;
+        this.monitors.get(mon1).ftdcs = this.monitors.get(mon2).ftdcs;
+        this.monitors.get(mon1).fadcs = this.monitors.get(mon2).fadcs;
+        this.monitors.get(mon1).fapmt = this.monitors.get(mon2).fapmt;
+        this.monitors.get(mon1).ftpmt = this.monitors.get(mon2).ftpmt;
     }
     
     
@@ -564,12 +569,12 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         if (beamMonitor != null && !beamMonitor.getBeamStatus()) {
             return;
         }
-        
+       
         // convert event to HIPO:
-    	DataEvent hipo = event;
+        DataEvent hipo = event;
         if (event instanceof EvioDataEvent) {
             Event dump = this.clasDecoder.getDataEvent(event);
-            Bank header = this.clasDecoder.createHeaderBank(this.ccdbRunNumber, getEventNumber(event), (double)0, (double)0);
+            Bank header = this.clasDecoder.createHeaderBank(this.ccdbRunNumber, getEventNumber(dump), (double)0, (double)0);
             Bank trigger = this.clasDecoder.createTriggerBank();
             Bank helicity = this.clasDecoder.createHelicityDecoderBank((EvioDataEvent)event);
             Bank onlineHelicity = this.clasDecoder.createOnlineHelicityBank();
@@ -578,7 +583,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
             if (trigger != null) dump.write(trigger);
             if (helicity != null) dump.write(helicity);
             this.clasDecoder.extractPulses(dump);  // Apply AHDC Decoder !!!
-	    hipo = new HipoDataEvent(dump, this.schemaFactory);
+            hipo = new HipoDataEvent(dump, this.schemaFactory);
         }
         
         // if header bank is missing, do nothing
@@ -999,5 +1004,5 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
     public void processShape(DetectorShape2D dsd) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-       
+
 }
