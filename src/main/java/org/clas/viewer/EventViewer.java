@@ -573,16 +573,7 @@ public class EventViewer implements IDataEventListener, DetectorListener, Action
         // convert event to HIPO:
         DataEvent hipo = event;
         if (event instanceof EvioDataEvent) {
-            Event dump = this.clasDecoder.getDataEvent(event);
-            Bank header = this.clasDecoder.createHeaderBank(this.ccdbRunNumber, getEventNumber(dump), (double)0, (double)0);
-            Bank trigger = this.clasDecoder.createTriggerBank();
-            Bank helicity = this.clasDecoder.createHelicityDecoderBank((EvioDataEvent)event);
-            Bank onlineHelicity = this.clasDecoder.createOnlineHelicityBank();
-            if(onlineHelicity!=null) dump.write(onlineHelicity);
-            if (header != null) dump.write(header);
-            if (trigger != null) dump.write(trigger);
-            if (helicity != null) dump.write(helicity);
-            this.clasDecoder.extractPulses(dump);  // Apply AHDC Decoder !!!
+            Event dump = this.clasDecoder.getDecodedEvent((EvioDataEvent)event, this.ccdbRunNumber, eventCounter, (double)0, (double)0);
             hipo = new HipoDataEvent(dump, this.schemaFactory);
         }
         
