@@ -16,6 +16,8 @@ import org.jlab.io.base.DataEvent;
 public class AHDCmonitor  extends DetectorMonitor {
 
     static final int[] layer_wires  = {47,56,56,72,72,87,87,99};
+    static final int numSamples = 20;
+    static final double samplingTime = 50; 
 
     public AHDCmonitor(String name) {
         super(name);
@@ -167,19 +169,19 @@ public class AHDCmonitor  extends DetectorMonitor {
         hist2d_wftime.setTitleX("wire number");
         hist2d_wftime.setTitle("< wftime >");
 
-        H1F hist1d_leadingEdgeTime = new H1F("leadingEdgeTime1D", "leadingEdgeTime1D", 100, 0, 1500);
+        H1F hist1d_leadingEdgeTime = new H1F("leadingEdgeTime1D", "leadingEdgeTime1D", 100, 0, numSamples*samplingTime);
         hist1d_leadingEdgeTime.setTitleX("leadingEdgeTime (ns)");
         hist1d_leadingEdgeTime.setTitleY("count");
         
-	H1F hist1d_timeOverThreshold = new H1F("timeOverThreshold1D", "timeOverThreshold1D", 100, 0, 1500);
+	H1F hist1d_timeOverThreshold = new H1F("timeOverThreshold1D", "timeOverThreshold1D", 100, 0, numSamples*samplingTime);
         hist1d_timeOverThreshold.setTitleX("timeOverThreshold (ns)");
         hist1d_timeOverThreshold.setTitleY("count");
 
-        H1F hist1d_constantFractionTime = new H1F("constantFractionTime1D", "constantFractionTime1D", 100, 0, 1500);
+        H1F hist1d_constantFractionTime = new H1F("constantFractionTime1D", "constantFractionTime1D", 100, 0, numSamples*samplingTime);
         hist1d_constantFractionTime.setTitleX("constantFractionTime (ns)");
         hist1d_constantFractionTime.setTitleY("count");
         
-	H1F hist1d_wftime = new H1F("wftime1D", "wftime1D", 100, 0, 30);
+	H1F hist1d_wftime = new H1F("wftime1D", "wftime1D", 100, 0, numSamples);
         hist1d_wftime.setTitleX("wftime (bin)");
         hist1d_wftime.setTitleY("count");
         
@@ -236,16 +238,16 @@ public class AHDCmonitor  extends DetectorMonitor {
         number_of_layers_hit.setTitleX("N layers firing");
 
         // tab 1D
-	H1F average_waveform = new H1F("average_waveform", "average waveform", 30, 0, 30);
+	H1F average_waveform = new H1F("average_waveform", "average waveform", numSamples, 0, numSamples);
         average_waveform.setTitleX("sample");
 
-        H1F average_waveform_raw = new H1F("average_waveform_raw", "average waveform", 30, 0, 30);
+        H1F average_waveform_raw = new H1F("average_waveform_raw", "average waveform", numSamples, 0, numSamples);
         average_waveform_raw.setTitleX("sample");
 
-        H1F average_waveform_sample_count = new H1F("average_waveform_sample_count", "sample count", 30, 0, 30);
+        H1F average_waveform_sample_count = new H1F("average_waveform_sample_count", "sample count", numSamples, 0, numSamples);
         average_waveform_sample_count.setTitleX("sample");
 
-        H1F average_waveform_samples = new H1F("average_waveform_samples", "N samples", 30, 0, 30);
+        H1F average_waveform_samples = new H1F("average_waveform_samples", "N samples", numSamples, 0, numSamples);
         average_waveform_samples.setTitleX("sample counts");
 
         H1F waveform_timestamp = new H1F("waveform_timestamp", "waveform timestamp", 100, 0, 1000);
@@ -403,7 +405,7 @@ public class AHDCmonitor  extends DetectorMonitor {
                 H1F average_waveform_sample_count  = this.getDataGroup().getItem(0,0,0).getH1F("average_waveform_sample_count");
                 H1F average_waveform_samples  = this.getDataGroup().getItem(0,0,0).getH1F("average_waveform_samples");
                 int n_samples = 0;
-                for(int i= 0; i<29 ; i++) {
+                for(int i= 0; i<numSamples ; i++) {
                     int sample_value = wfbank.getShort("s"+(i+1), loop);
                     average_waveform_raw.fill(i,sample_value);
                     if(sample_value >0) {
